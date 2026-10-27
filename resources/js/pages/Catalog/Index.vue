@@ -257,7 +257,6 @@ onUnmounted(() => {
                             :value="league.id"
                         >
                             {{ league.name }}
-                            {{ league.id === selectedLeagueId ? ' · Selected' : '' }}
                         </option>
                     </select>
                 </label>
@@ -293,11 +292,13 @@ onUnmounted(() => {
                         "
                         @click="selectCategory(null)"
                     >
-                        <span
-                            class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-800 text-lg"
-                        >
-                            ▦
-                        </span>
+                        <img
+                            v-if="imageUrl('images/categories/UI_Img_AuctionHouseV2_Icon01_Jihuo.png')"
+                            :src="imageUrl('images/categories/UI_Img_AuctionHouseV2_Icon01_Jihuo.png')!"
+                            alt="All items"
+                            class="h-9 w-9 rounded-lg bg-slate-800 object-contain p-1"
+                            loading="lazy"
+                        />
                         <span class="font-medium">All items</span>
                     </button>
 

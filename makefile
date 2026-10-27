@@ -33,6 +33,8 @@ install: check prepare-env
 	fi
 	@$(SAIL) artisan optimize:clear
 	@$(SAIL) artisan migrate --force
+	@$(SAIL) artisan db:seed
+	@$(SAIL) artisan storage:link
 	@echo ""
 	@echo "Installation complete!"
 	@echo "Application: http://localhost:$${APP_PORT:-8000}"

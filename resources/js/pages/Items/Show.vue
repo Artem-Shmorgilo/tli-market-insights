@@ -25,7 +25,7 @@ function imageUrl(path: string | null): string | null {
         <header class="border-b border-slate-800 bg-slate-900">
             <div class="mx-auto max-w-5xl px-4 py-5 sm:px-6 lg:px-8">
                 <Link
-                    href="/public"
+                    href="/"
                     class="text-sm text-amber-300 transition hover:text-amber-200"
                 >
                     ← Back to catalog
