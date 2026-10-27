@@ -11,32 +11,76 @@ class ItemSeeder extends Seeder
 {
     public function run(): void
     {
-        $categories = Category::get()->keyBy('system_name');
+        $jsonPath = database_path('seeders/data/items_seed.json');
 
-        if ($categories->count() === 0) {
+        if (!is_file($jsonPath)) {
             throw new RuntimeException(
-                'Categories were not found. '
-                . 'Run CategorySeeder first.'
+                "Items JSON file was not found: {$jsonPath}"
             );
         }
 
-        $items = [
-            [
-                'external_id' => 'example_item_001',
-                'name' => 'Example Legendary Item',
-                'image_path' => 'images/items/example-item-001.png',
-                'category_id' => $categories['category_legendary_gear']->id,
-            ],
-        ];
+        $data = json_decode(
+            file_get_contents($jsonPath),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
 
-        foreach ($items as $item) {
+        if (!isset($data['items']) || !is_array($data['items'])) {
+            throw new RuntimeException(
+                'Invalid items JSON: expected an "items" array.'
+            );
+        }
+
+        // Build a lookup: category system_name => database ID.
+        $categories = Category::query()
+            ->pluck('id', 'system_name')
+            ->all();
+
+        $imported = 0;
+        $skipped = 0;
+
+        foreach ($data['items'] as $item) {
+            $externalId = trim((string) ($item['id'] ?? ''));
+            $name = trim((string) ($item['name_en'] ?? ''));
+            $categorySystemName = trim(
+                (string) ($item['category'] ?? '')
+            );
+
+            if ($externalId === '' || $name === '') {
+                $skipped++;
+                continue;
+            }
+
+            if (
+                $categorySystemName === ''
+                || !isset($categories[$categorySystemName])
+            ) {
+                throw new RuntimeException(
+                    "Category not found for item {$externalId}: "
+                    . ($categorySystemName ?: '(empty)')
+                );
+            }
+
             Item::updateOrCreate(
-                ['external_id' => $item['external_id']],
+                ['external_id' => $externalId],
                 [
-                    'name' => $item['name'],
-                    'category_id' => $item['category_id'],
-                    'image_path' => $item['image_path'],
+                    'name' => $name,
+                    'category_id' => $categories[$categorySystemName],
+                    'image_path' => $item['img'] ?? null,
                 ],
+            );
+
+            $imported++;
+        }
+
+        $this->command?->info(
+            "Items imported or updated: {$imported}"
+        );
+
+        if ($skipped > 0) {
+            $this->command?->warn(
+                "Items skipped due to missing ID or name: {$skipped}"
             );
         }
     }
