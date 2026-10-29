@@ -12,6 +12,7 @@ class Category extends Model
         'system_name',
         'is_hidden',
         'image_path',
+        'display_order',
     ];
 
     public function items(): HasMany

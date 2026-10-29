@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('system_name', 100)->unique();
             $table->boolean('is_hidden')->default(false);
             $table->string('image_path', 1024)->nullable();
+            $table->integer('display_order');
             $table->timestamps();
         });
     }

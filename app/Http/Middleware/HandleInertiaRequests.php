@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\League;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -37,7 +38,18 @@ class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
-            //
+
+            'leagues' => fn () => League::query()
+                ->orderByDesc('started_at')
+                ->get(['id', 'name', 'system_name', 'started_at']),
+
+            'selectedLeagueId' => fn () => (
+            $request->query('league')
+                ? (int) $request->query('league')
+                : League::query()
+                ->orderByDesc('started_at')
+                ->value('id')
+            ),
         ];
     }
 }

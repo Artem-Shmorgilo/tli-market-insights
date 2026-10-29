@@ -2,6 +2,11 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { router } from '@inertiajs/vue3';
+import AppLayout from '@/Layouts/AppLayout.vue';
+
+defineOptions({
+    layout: AppLayout,
+});
 
 interface League {
     id: number;
@@ -220,53 +225,10 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div class="min-h-screen bg-slate-950 text-slate-100">
-        <header class="border-b border-slate-800 bg-slate-900/90">
-            <div
-                class="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8"
-            >
-                <a href="/" class="flex items-center gap-3">
-                    <div
-                        class="flex h-11 w-11 items-center justify-center rounded-xl border border-amber-400/20 bg-amber-400/10 text-xl text-amber-300"
-                    >
-                        ⚔
-                    </div>
-                    <div>
-                        <h1 class="text-xl font-bold tracking-tight">
-                            TLI Market Insights
-                        </h1>
-                        <p
-                            class="mt-0.5 text-xs font-medium uppercase tracking-[0.2em] text-slate-500"
-                        >
-                            Trade house analytics
-                        </p>
-                    </div>
-                </a>
-
-                <label class="flex items-center gap-3">
-                    <span class="text-sm text-slate-400">League</span>
-                    <select
-                        :value="selectedLeagueId ?? ''"
-                        :disabled="!leagues.length"
-                        class="min-w-48 rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-slate-100 outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20"
-                        @change="selectLeague"
-                    >
-                        <option
-                            v-for="league in leagues"
-                            :key="league.id"
-                            :value="league.id"
-                        >
-                            {{ league.name }}
-                        </option>
-                    </select>
-                </label>
-            </div>
-        </header>
-
-        <main
-            class="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[250px_minmax(0,1fr)] lg:px-8"
-        >
-            <aside>
+    <div
+        class="grid grid-cols-1 gap-6 lg:grid-cols-[250px_minmax(0,1fr)]"
+    >
+        <aside>
                 <div class="mb-3 flex items-center justify-between">
                     <h2
                         class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500"
@@ -334,7 +296,7 @@ onUnmounted(() => {
                 </nav>
             </aside>
 
-            <section class="min-w-0">
+        <section class="min-w-0">
                 <div
                     class="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
                 >
@@ -501,6 +463,5 @@ onUnmounted(() => {
                     You've reached the end of the list.
                 </p>
             </section>
-        </main>
     </div>
 </template>

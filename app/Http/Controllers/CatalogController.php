@@ -23,7 +23,7 @@ class CatalogController extends Controller
             ->orderByDesc('id')
             ->get(['id', 'name', 'system_name', 'started_at']);
 
-        $defaultLeague = $leagues->first();
+        $defaultLeague = $leagues->whereNotNull('started_at')->first();
 
         $selectedLeague = $leagues->firstWhere(
             'id',
@@ -32,7 +32,7 @@ class CatalogController extends Controller
 
         $categories = Category::query()
             ->where('is_hidden', false)
-            ->orderBy('name')
+            ->orderBy('display_order')
             ->get(['id', 'name', 'system_name', 'image_path']);
 
         $items = $this->itemsQuery(

@@ -1,6 +1,9 @@
-
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
+import AppLayout from '@/Layouts/AppLayout.vue';
+
+defineOptions({
+    layout: AppLayout,
+});
 
 interface Item {
     id: number;
@@ -22,17 +25,6 @@ function imageUrl(path: string | null): string | null {
 
 <template>
     <div class="min-h-screen bg-slate-950 text-slate-100">
-        <header class="border-b border-slate-800 bg-slate-900">
-            <div class="mx-auto max-w-5xl px-4 py-5 sm:px-6 lg:px-8">
-                <Link
-                    href="/"
-                    class="text-sm text-amber-300 transition hover:text-amber-200"
-                >
-                    ← Back to catalog
-                </Link>
-            </div>
-        </header>
-
         <main class="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
             <section
                 class="rounded-2xl border border-slate-800 bg-slate-900 p-6 sm:p-8"

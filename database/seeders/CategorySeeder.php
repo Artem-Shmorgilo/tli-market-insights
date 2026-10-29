@@ -84,6 +84,8 @@ class CategorySeeder extends Seeder
             ],
         ];
 
+        $order = 0;
+
         foreach ($categories as $category) {
             Category::updateOrCreate(
                 ['system_name' => $category['system_name']],
@@ -91,6 +93,7 @@ class CategorySeeder extends Seeder
                     'name' => $category['name'],
                     'is_hidden' => $category['is_hidden'],
                     'image_path' => $category['image_path'],
+                    'display_order' => $order++,
                 ],
             );
         }
