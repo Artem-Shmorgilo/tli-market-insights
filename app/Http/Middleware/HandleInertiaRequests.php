@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\League;
+use App\Services\LeagueService;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -36,20 +37,16 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $leagueSelectionService = app(LeagueService::class);
+
         return [
             ...parent::share($request),
 
-            'leagues' => fn () => League::query()
-                ->orderByDesc('started_at')
-                ->get(['id', 'name', 'system_name', 'started_at']),
+            'leagues' => fn () => $leagueSelectionService->leagues(),
 
-            'selectedLeagueId' => fn () => (
-            $request->query('league')
-                ? (int) $request->query('league')
-                : League::query()
-                ->orderByDesc('started_at')
-                ->value('id')
-            ),
+            'selectedLeagueId' => fn () => $leagueSelectionService
+                ->selected($request)
+                ?->id,
         ];
     }
 }

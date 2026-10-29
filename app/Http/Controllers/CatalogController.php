@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Item;
 use App\Models\League;
 use App\Models\Price;
+use App\Services\LeagueService;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -14,21 +15,19 @@ use Inertia\Response;
 
 class CatalogController extends Controller
 {
+    public function __construct(
+        private readonly LeagueService $leagueService,
+    ) {}
     private const int PER_PAGE = 20;
 
     public function index(Request $request): Response
     {
-        $leagues = League::query()
-            ->orderByDesc('started_at')
-            ->orderByDesc('id')
-            ->get(['id', 'name', 'system_name', 'started_at']);
+        $leagues = $this->leagueService->leagues();
 
-        $defaultLeague = $leagues->whereNotNull('started_at')->first();
-
-        $selectedLeague = $leagues->firstWhere(
-            'id',
-            $request->integer('league', $defaultLeague?->id ?? 0),
-        ) ?? $defaultLeague;
+        $selectedLeague = $this->leagueService->selected(
+            $request,
+            $leagues,
+        );
 
         $categories = Category::query()
             ->where('is_hidden', false)
