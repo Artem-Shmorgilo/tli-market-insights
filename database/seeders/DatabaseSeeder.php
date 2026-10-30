@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             LeagueSeeder::class,
             ItemSeeder::class,
+            UserSeeder::class,
         ]);
     }
 }
