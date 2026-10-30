@@ -21,9 +21,14 @@ function selectLeague(event: Event) {
     const target = event.target as HTMLSelectElement;
     const leagueId = Number(target.value);
 
+    const currentUrl = new URL(page.url, window.location.origin);
+
     router.get(
-        '/',
-        { league: leagueId },
+        currentUrl.pathname,
+        {
+            ...Object.fromEntries(currentUrl.searchParams.entries()),
+            league: leagueId,
+        },
         {
             preserveScroll: false,
             preserveState: false,

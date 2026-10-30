@@ -33,8 +33,13 @@ interface Item {
 
 interface PaginatedItems {
     data: Item[];
-    current_page: number;
-    last_page: number;
+    links: {
+        next: string | null;
+        prev: string | null;
+    };
+    meta: {
+        current_page: number;
+    };
 }
 
 const props = defineProps<{
@@ -87,7 +92,7 @@ function formatPrice(price: string | number | null): string {
 }
 
 function navigateToItem(item: Item) {
-    router.get(`/items/${item.id}`);
+    router.get(`/items/${item.id}`, {league: props.selectedLeagueId ?? undefined});
 }
 
 function applyFilters() {
@@ -176,8 +181,8 @@ async function loadItems(reset = false) {
             ? result.data
             : [...items.value, ...result.data];
 
-        page.value = result.current_page;
-        hasMore.value = Boolean(result.next_page_url);
+        page.value = result.meta.current_page;
+        hasMore.value = Boolean(result.links.next);
     } catch {
         if (version === requestVersion) {
             errorMessage.value = 'Unable to load items. Please try again.';
@@ -202,6 +207,16 @@ watch(search, () => {
     }, 350);
 });
 
+watch(scrollSentinel, (element, previousElement) => {
+    if (previousElement) {
+        observer?.unobserve(previousElement);
+    }
+
+    if (element) {
+        observer?.observe(element);
+    }
+});
+
 onMounted(() => {
     observer = new IntersectionObserver(
         (entries) => {
@@ -211,10 +226,6 @@ onMounted(() => {
         },
         { rootMargin: '300px' },
     );
-
-    if (scrollSentinel.value) {
-        observer.observe(scrollSentinel.value);
-    }
 });
 
 onUnmounted(() => {
